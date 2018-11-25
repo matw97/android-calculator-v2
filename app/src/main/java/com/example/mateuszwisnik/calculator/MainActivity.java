@@ -1,16 +1,18 @@
 package com.example.mateuszwisnik.calculator;
 
-import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import org.mariuszgromada.math.mxparser.Expression;
 
-import java.io.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         Button buttonDiv = findViewById(R.id.buttonDiv);
         Button buttonHistory = findViewById(R.id.buttonHistory);
         Button buttonClearHistory = findViewById(R.id.buttonClearHistory);
+        Button buttonBackspace = findViewById(R.id.buttonBackspace);
         result = findViewById(R.id.result);
 
         button0.setOnClickListener(new View.OnClickListener() {
@@ -108,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         button9.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                result.setText(result.getText() + "0");
+                result.setText(result.getText() + "9");
             }
         });
 
@@ -181,6 +184,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 clearHistory();
+            }
+        });
+
+        buttonBackspace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String expression = result.getText().toString();
+                if(expression.equals("")) {
+                    result.setText("");
+                } else {
+                    result.setText(expression.substring(0, expression.length() - 1));
+                }
             }
         });
     }

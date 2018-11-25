@@ -1,12 +1,11 @@
 package com.example.mateuszwisnik.calculator;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
-import org.w3c.dom.Text;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 
 public class HistoryActivity extends AppCompatActivity {
 
@@ -22,14 +21,14 @@ public class HistoryActivity extends AppCompatActivity {
             FileInputStream fileInputStream = openFileInput("history.txt");
             InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
             char[] inputBuffer = new char[256];
-            String s = "";
+            String result = "";
             int charRead;
 
             while ((charRead = inputStreamReader.read(inputBuffer)) > 0) {
-                String readstring = String.copyValueOf(inputBuffer, 0, charRead);
-                s += readstring;
+                String stringRead = String.copyValueOf(inputBuffer, 0, charRead);
+                result += stringRead;
             }
-            history.setText(s);
+            history.setText(result);
         }
         catch (Exception e) {
             e.printStackTrace();
