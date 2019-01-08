@@ -14,7 +14,8 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView result;
+    private DatabaseHelper databaseHelper = null;
+    private static final String[] signs = {"+", "-", "*", "/", "."};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +40,9 @@ public class MainActivity extends AppCompatActivity {
         Button buttonSub = findViewById(R.id.btnSubtract);
         Button buttonDiv = findViewById(R.id.btnDivide);
         Button buttonHistory = findViewById(R.id.btnHistory);
-        result = findViewById(R.id.txtScreen);
+        TextView result = findViewById(R.id.txtScreen);
 
-        final DatabaseHelper mDbHelper = new DatabaseHelper(getBaseContext());
-
-        final String[] signs = {"+", "-", "*", "/", "."};
+        databaseHelper = new DatabaseHelper(getBaseContext());
 
         button0.setOnClickListener(view -> result.setText(result.getText() + "0"));
 
@@ -66,75 +65,49 @@ public class MainActivity extends AppCompatActivity {
         button9.setOnClickListener(view -> result.setText(result.getText() + "9"));
 
         buttonDot.setOnClickListener(view -> {
-            String expression = result.getText().toString();
-            if(!expression.equals(""))
-            {
-                String match = String.valueOf(expression.charAt(expression.length() - 1));
-                if (Arrays.stream(signs).noneMatch(match::equals)) {
-                    result.setText(result.getText() + ".");
-                }
+            if(isOperationPossible(result.getText().toString())) {
+                result.setText(result.getText() + ".");
             }
         });
 
         buttonC.setOnClickListener(view -> result.setText(""));
 
         buttonAdd.setOnClickListener(view -> {
-            String expression = result.getText().toString();
-            if(!expression.equals(""))
-            {
-                String match = String.valueOf(expression.charAt(expression.length() - 1));
-                if (Arrays.stream(signs).noneMatch(match::equals)) {
-                    result.setText(result.getText() + "+");
-                }
+            if(isOperationPossible(result.getText().toString())) {
+                result.setText(result.getText() + "+");
             }
         });
 
         buttonSub.setOnClickListener(view -> {
-            String expression = result.getText().toString();
-            if (expression.equals("")) {
+            if(result.getText().toString().equals("")) {
                 result.setText(result.getText() + "-");
             }
-            if (!expression.equals("")) {
-                String match = String.valueOf(expression.charAt(expression.length() - 1));
-                if (Arrays.stream(signs).noneMatch(match::equals)) {
-                    result.setText(result.getText() + "-");
-                }
+            if(isOperationPossible(result.getText().toString())) {
+                result.setText(result.getText() + "-");
             }
         });
 
         buttonMul.setOnClickListener(view -> {
-            String expression = result.getText().toString();
-            if(!expression.equals(""))
-            {
-                String match = String.valueOf(expression.charAt(expression.length() - 1));
-                if (Arrays.stream(signs).noneMatch(match::equals)) {
-                    result.setText(result.getText() + "*");
-                }
+            if(isOperationPossible(result.getText().toString())) {
+                result.setText(result.getText() + "*");
             }
         });
 
         buttonDiv.setOnClickListener(view -> {
-            String expression = result.getText().toString();
-            if(!expression.equals(""))
-            {
-                String match = String.valueOf(expression.charAt(expression.length() - 1));
-                if (Arrays.stream(signs).noneMatch(match::equals)) {
-                    result.setText(result.getText() + "/");
-                }
+            if(isOperationPossible(result.getText().toString())) {
+                result.setText(result.getText() + "/");
             }
         });
 
         buttonEval.setOnClickListener(v -> {
-            String expressionToBeParsed = result.getText().toString();
-            Expression expression = new Expression(expressionToBeParsed);
-            String resultToRender = String.valueOf(expression.calculate());
-            if(!resultToRender.equals("NaN")) {
-                result.setText(resultToRender);
+            Expression expression = new Expression(result.getText().toString());
+            if(!String.valueOf(expression.calculate()).equals("NaN")) {
+                result.setText(String.valueOf(expression.calculate()));
 
-                SQLiteDatabase db = mDbHelper.getWritableDatabase();
+                SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
                 ContentValues values = new ContentValues();
-                values.put(DatabaseContract.DatabaseEntry.COLUMN_NAME_EXPRESSION, expressionToBeParsed + "=" + String.valueOf(expression.calculate()));
+                values.put(DatabaseContract.DatabaseEntry.COLUMN_NAME_EXPRESSION, result.getText().toString() + "=" + String.valueOf(expression.calculate()));
                 db.insert(DatabaseContract.DatabaseEntry.TABLE_NAME, null, values);
             } else {
                 result.setText("Invalid operation");
@@ -144,6 +117,15 @@ public class MainActivity extends AppCompatActivity {
         buttonHistory.setOnClickListener(v -> showHistory());
     }
 
+    private boolean isOperationPossible(String expression) {
+        if(!expression.equals(""))
+        {
+            String match = String.valueOf(expression.charAt(expression.length() - 1));
+            return Arrays.stream(signs).noneMatch(match::equals);
+        }
+        return false;
+    }
+
     private void showHistory() {
         Intent intent = new Intent(this, HistoryActivity.class);
         startActivity(intent);
@@ -151,8 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        DatabaseHelper mDbHelper = new DatabaseHelper(getBaseContext());
-        mDbHelper.close();
+        databaseHelper.close();
         super.onDestroy();
     }
 }

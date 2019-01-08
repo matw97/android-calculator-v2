@@ -11,7 +11,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:gravity="end|center_vertical"
-        android:maxLength="16"
+        android:maxLength="32"
         android:padding="10dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="30sp"
