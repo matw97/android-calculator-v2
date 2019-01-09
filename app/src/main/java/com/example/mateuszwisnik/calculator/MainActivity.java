@@ -7,12 +7,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Arrays;
-
 public class MainActivity extends AppCompatActivity {
 
-    DatabaseWrapper databaseWrapper;
-    private static final String[] signs = {"+", "-", "*", "/", "."};
+    private DatabaseWrapper databaseWrapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         button9.setOnClickListener(view -> result.setText(result.getText() + "9"));
 
         buttonDot.setOnClickListener(view -> {
-            if(isOperationPossible(result.getText().toString())) {
+            if(Utils.isOperationPossible(result.getText().toString())) {
                 result.setText(result.getText() + ".");
             }
         });
@@ -71,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         buttonC.setOnClickListener(view -> result.setText(""));
 
         buttonAdd.setOnClickListener(view -> {
-            if(isOperationPossible(result.getText().toString())) {
+            if(Utils.isOperationPossible(result.getText().toString())) {
                 result.setText(result.getText() + "+");
             }
         });
@@ -80,19 +77,19 @@ public class MainActivity extends AppCompatActivity {
             if(result.getText().toString().equals("")) {
                 result.setText(result.getText() + "-");
             }
-            if(isOperationPossible(result.getText().toString())) {
+            if(Utils.isOperationPossible(result.getText().toString())) {
                 result.setText(result.getText() + "-");
             }
         });
 
         buttonMul.setOnClickListener(view -> {
-            if(isOperationPossible(result.getText().toString())) {
+            if(Utils.isOperationPossible(result.getText().toString())) {
                 result.setText(result.getText() + "*");
             }
         });
 
         buttonDiv.setOnClickListener(view -> {
-            if(isOperationPossible(result.getText().toString())) {
+            if(Utils.isOperationPossible(result.getText().toString())) {
                 result.setText(result.getText() + "/");
             }
         });
@@ -107,15 +104,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         buttonHistory.setOnClickListener(view -> showHistory());
-    }
-
-    private boolean isOperationPossible(String expression) {
-        if(!expression.equals(""))
-        {
-            String match = String.valueOf(expression.charAt(expression.length() - 1));
-            return Arrays.stream(signs).noneMatch(match::equals);
-        }
-        return false;
     }
 
     private void showHistory() {

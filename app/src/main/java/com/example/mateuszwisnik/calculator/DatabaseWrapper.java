@@ -51,7 +51,7 @@ public class DatabaseWrapper {
         sqLiteDatabase.delete(DatabaseContract.DatabaseEntry.TABLE_NAME, null, null);
     }
 
-    public void closeConnection() {
+    void closeConnection() {
         databaseHelper.close();
     }
 }

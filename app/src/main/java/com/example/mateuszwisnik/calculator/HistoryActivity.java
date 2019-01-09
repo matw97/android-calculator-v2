@@ -8,8 +8,9 @@ import android.widget.ListView;
 
 public class HistoryActivity extends AppCompatActivity {
 
-    DatabaseWrapper databaseWrapper;
-    ListView listView;
+    private DatabaseWrapper databaseWrapper;
+    private ListView listView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +30,7 @@ public class HistoryActivity extends AppCompatActivity {
         });
     }
 
-    public void populateListView() {
+    private void populateListView() {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this,R.layout.row, databaseWrapper.select());
         listView.setAdapter(arrayAdapter);
     }
