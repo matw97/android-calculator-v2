@@ -45,5 +45,6 @@ public class UtilsTest {
         assertFalse(Utils.isOperationPossible("**"));
         assertFalse(Utils.isOperationPossible("-----------------"));
         assertFalse(Utils.isOperationPossible("......."));
+        assertFalse(Utils.isOperationPossible(""));
     }
 }
