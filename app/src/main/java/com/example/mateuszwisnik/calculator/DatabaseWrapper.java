@@ -10,11 +10,11 @@ import java.util.List;
 public class DatabaseWrapper {
     private DatabaseHelper databaseHelper;
 
-    public DatabaseWrapper(DatabaseHelper databaseHelper) {
+    DatabaseWrapper(DatabaseHelper databaseHelper) {
         this.databaseHelper = databaseHelper;
     }
 
-    public void insert(String expression) {
+    void insert(String expression) {
         SQLiteDatabase sqLiteDatabase = databaseHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(DatabaseContract.DatabaseEntry.COLUMN_NAME_EXPRESSION, expression + "=" + Utils.calculate(expression));
@@ -46,7 +46,7 @@ public class DatabaseWrapper {
         return expressions;
     }
 
-    public void delete() {
+    void delete() {
         SQLiteDatabase sqLiteDatabase = databaseHelper.getReadableDatabase();
         sqLiteDatabase.delete(DatabaseContract.DatabaseEntry.TABLE_NAME, null, null);
     }

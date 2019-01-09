@@ -1,22 +1,16 @@
 package com.example.mateuszwisnik.calculator;
 
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.example.mateuszwisnik.calculator.Utils;
-
-import org.mariuszgromada.math.mxparser.Expression;
 
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
-    private DatabaseHelper databaseHelper;
     DatabaseWrapper databaseWrapper;
     private static final String[] signs = {"+", "-", "*", "/", "."};
 
@@ -45,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         Button buttonHistory = findViewById(R.id.btnHistory);
         TextView result = findViewById(R.id.txtScreen);
 
-        databaseHelper = new DatabaseHelper(getBaseContext());
+        DatabaseHelper databaseHelper = new DatabaseHelper(getBaseContext());
         databaseWrapper = new DatabaseWrapper(databaseHelper);
 
         button0.setOnClickListener(view -> result.setText(result.getText() + "0"));
@@ -105,8 +99,8 @@ public class MainActivity extends AppCompatActivity {
 
         buttonEval.setOnClickListener(view -> {
             if(Utils.isValidResult(Utils.calculate(result.getText().toString()))) {
-                result.setText(String.valueOf(Utils.calculate(result.getText().toString())));
                 databaseWrapper.insert(result.getText().toString());
+                result.setText(String.valueOf(Utils.calculate(result.getText().toString())));
             } else {
                 Toast.makeText(this,"Invalid Exression", Toast.LENGTH_SHORT).show();
             }

@@ -7,6 +7,9 @@ final class DatabaseContract {
     private DatabaseContract() {}
 
     static class DatabaseEntry implements BaseColumns {
+
+        private DatabaseEntry() {}
+
         static final String TABLE_NAME = "history";
         static final String COLUMN_NAME_EXPRESSION = "expression";
     }
