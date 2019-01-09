@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+import com.example.mateuszwisnik.calculator.Utils;
 
 import org.mariuszgromada.math.mxparser.Expression;
 
@@ -14,7 +16,8 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
-    private DatabaseHelper databaseHelper = null;
+    private DatabaseHelper databaseHelper;
+    DatabaseWrapper databaseWrapper;
     private static final String[] signs = {"+", "-", "*", "/", "."};
 
     @Override
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         TextView result = findViewById(R.id.txtScreen);
 
         databaseHelper = new DatabaseHelper(getBaseContext());
+        databaseWrapper = new DatabaseWrapper(databaseHelper);
 
         button0.setOnClickListener(view -> result.setText(result.getText() + "0"));
 
@@ -99,22 +103,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        buttonEval.setOnClickListener(v -> {
-            Expression expression = new Expression(result.getText().toString());
-            if(!String.valueOf(expression.calculate()).equals("NaN")) {
-                result.setText(String.valueOf(expression.calculate()));
-
-                SQLiteDatabase db = databaseHelper.getWritableDatabase();
-
-                ContentValues values = new ContentValues();
-                values.put(DatabaseContract.DatabaseEntry.COLUMN_NAME_EXPRESSION, result.getText().toString() + "=" + String.valueOf(expression.calculate()));
-                db.insert(DatabaseContract.DatabaseEntry.TABLE_NAME, null, values);
+        buttonEval.setOnClickListener(view -> {
+            if(Utils.isValidResult(Utils.calculate(result.getText().toString()))) {
+                result.setText(String.valueOf(Utils.calculate(result.getText().toString())));
+                databaseWrapper.insert(result.getText().toString());
             } else {
-                result.setText("Invalid operation");
+                Toast.makeText(this,"Invalid Exression", Toast.LENGTH_SHORT).show();
             }
         });
 
-        buttonHistory.setOnClickListener(v -> showHistory());
+        buttonHistory.setOnClickListener(view -> showHistory());
     }
 
     private boolean isOperationPossible(String expression) {
@@ -133,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        databaseHelper.close();
+        databaseWrapper.closeConnection();
         super.onDestroy();
     }
 }
